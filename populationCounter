@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace populationCenter
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var citiesCountryPopulation = new Dictionary<string, Dictionary<string, long>>();
+            var input = Console.ReadLine();
+            while (input != "report")
+            {
+                var tokens = input.Split('|');
+                var country = tokens[1];
+                var city = tokens[0];
+                var population = long.Parse(tokens[2]);
+                if (!citiesCountryPopulation.ContainsKey(country))
+                {
+                    citiesCountryPopulation[country] = new Dictionary<string, long>();
+                }
+                if (!citiesCountryPopulation[country].ContainsKey(city))
+                {
+                    citiesCountryPopulation[country][city] = 0;
+                }
+                citiesCountryPopulation[country][city] += population;
+
+
+                Console.WriteLine();
+                input = Console.ReadLine();
+            }
+
+            foreach (var cityCountyPopulation in citiesCountryPopulation.OrderByDescending(p => p.Value.Sum(y => y.Value)))
+            {
+                var county = cityCountyPopulation.Key;
+                long totalPopulation = cityCountyPopulation.Value.Values.Sum();
+
+                Console.WriteLine($"{county} (total population: {totalPopulation})");
+                Console.Write($"=>{string.Join("=>", cityCountyPopulation.Value.OrderByDescending(p => p.Value).Select(x => $"{ x.Key}: { x.Value}\r\n"))}");
+            }
+        }
+    }
+}
