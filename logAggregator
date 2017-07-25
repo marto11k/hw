@@ -1,0 +1,43 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace logsAggregator
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var usersIpsDurations = new SortedDictionary<string, Dictionary<string, int>>();
+            var counts = int.Parse(Console.ReadLine());
+            for (int i = 0; i < counts; i++)
+            {
+                var userIpDuration = Console.ReadLine().Split();
+                var ip = userIpDuration[0];
+                var name = userIpDuration[1];
+                var duration = int.Parse(userIpDuration[2]);
+                if (!usersIpsDurations.ContainsKey(name))
+                {
+                    usersIpsDurations[name] = new Dictionary<string, int>();
+                }
+                if (!usersIpsDurations[name].ContainsKey(ip))
+                {
+                    usersIpsDurations[name][ip] = 0;
+                }
+                usersIpsDurations[name][ip] += duration;
+            }
+            foreach (var userIpDuration in usersIpsDurations)
+            {
+                var name = userIpDuration.Key;
+                var ipsDurations = userIpDuration.Value;
+                var totalDuration = ipsDurations.Values.Sum();
+                var ips = ipsDurations.Keys.OrderBy(p => p);
+
+                Console.WriteLine($"{name}: {totalDuration} [{string.Join(", ", ips)}]");
+            }
+
+        }
+    }
+}
