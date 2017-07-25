@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace userLogs
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var usersIpsCount = new SortedDictionary<string, Dictionary<string, int>>();
+            var input = Console.ReadLine();
+            while (input != "end")
+            {
+                string[] tokens = input.Split("= ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var userName = tokens[tokens.Length - 1];
+                var ip = tokens[1];
+                if (!usersIpsCount.ContainsKey(userName))
+                {
+                    usersIpsCount[userName] = new Dictionary<string, int>();
+                }
+                if (!usersIpsCount[userName].ContainsKey(ip))
+                {
+                    usersIpsCount[userName][ip] = 0;
+                }
+
+                usersIpsCount[userName][ip] += 1;
+
+
+                input = Console.ReadLine();
+            }
+            foreach (var userIpsCount in usersIpsCount)
+            {
+                var name = userIpsCount.Key;
+                Console.WriteLine(name + ":");
+                var counter = 0;
+                foreach (var ipsMsgCount in userIpsCount.Value)
+                {
+
+                    Console.Write($"{ipsMsgCount.Key} => {ipsMsgCount.Value}");
+                    if (counter < userIpsCount.Value.Count - 1)
+                    {
+                        Console.Write(", ");
+                        counter++;
+                    }
+                    else
+                    {
+                        Console.WriteLine(".");
+                    }
+
+                }
+
+            }
+            Console.WriteLine();
+        }
+    }
+}
