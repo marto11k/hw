@@ -1,0 +1,88 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace closestTwoPoints
+{
+    class Program
+    {
+        class Point
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+        }
+
+        static void Main(string[] args)
+        {
+            Point[] point = ReadPoints();
+            Point[] closestPoints = FindClosestPoints(point);
+
+            PrintDistance(closestPoints);
+
+            PrintPoint(closestPoints[0]);
+            PrintPoint(closestPoints[1]);
+
+        }
+        static Point[] FindClosestPoints(Point[] point)
+        {
+            var minimalDistance = double.MaxValue;
+            Point[] closestTwoPoints = new Point[2];
+            for (int pnt1 = 0; pnt1 < point.Length; pnt1++)
+            {
+                for (int pnt2 = pnt1 + 1; pnt2 < point.Length; pnt2++)
+                {
+                    var distance = CalcDistance(point[pnt1], point[pnt2]);
+                    if (distance < minimalDistance)
+                    {
+                        minimalDistance = distance;
+                        closestTwoPoints = new Point[]
+                        {
+                            point[pnt1],point[pnt2]
+                        };
+                    }
+                }
+            }
+            return closestTwoPoints;
+        }
+
+        static double CalcDistance(Point point1, Point point2)
+        {
+            var deltaX = point1.X - point2.X;
+            var deltaY = point1.Y - point2.Y;
+            return Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+        }
+
+        private static Point[] ReadPoints()
+        {
+            var n = int.Parse(Console.ReadLine());
+            Point[] points = new Point[n];
+            for (int i = 0; i < n; i++)
+            {
+                points[i] = ReadPoint();
+            }
+
+            return points;
+        }
+
+        static Point ReadPoint()
+        {
+            int[] pointInfo = Console.ReadLine().Split().Select(int.Parse).ToArray();
+            Point point = new Point();
+            point.X = pointInfo[0];
+            point.Y = pointInfo[1];
+            return point;
+        }
+        static void PrintPoint(Point point)
+        {
+            Console.WriteLine("({0}, {1})", point.X, point.Y);
+        }
+        static void PrintDistance(Point[] points)
+        {
+            var distance = CalcDistance(points[0], points[1]);
+            Console.WriteLine("{0:f3}", distance);
+        }
+
+    }
+}
