@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace queryMess
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string line = Console.ReadLine();
+            var pattern = new Regex(@"([^&=?]*)=([^&=]*)");
+            var spacesPattern = @"(\+|%20)+";
+            while (line != "END")
+            {
+                var dict = new Dictionary<string, List<string>>();
+                var matches = pattern.Matches(line);
+
+                for (int i = 0; i < matches.Count; i++)
+                {
+                    string key = matches[i].Groups[1].Value;
+                    key = Regex.Replace(key, spacesPattern, " ").Trim();
+
+                    string value = matches[i].Groups[2].Value;
+                    value = Regex.Replace(value, spacesPattern, " ").Trim();
+
+                    if (!dict.ContainsKey(key))
+                    {
+                        dict[key] = new List<string>();
+                    }
+                    dict[key].Add(value);
+
+                }
+                foreach (var pair in dict)
+                {
+                    var key = pair.Key;
+                    var value = pair.Value;
+                    Console.Write($"{key}=[{string.Join(", ", value)}]");
+                }
+                Console.WriteLine();
+                line = Console.ReadLine();
+            }
+
+        }
+    }
+}
