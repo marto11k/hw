@@ -1,0 +1,60 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace userYourChains
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var doc = Console.ReadLine();
+            var pattern = @"<p>(?<message>.+?)</p>";
+            var messages = Regex.Matches(doc, pattern)
+                .Cast<Match>()
+                .Select(a => a.Groups["message"].Value)
+                .Select(a => Regex.Replace(a, @"[^a-z\d]", " "))
+                .Select(a => Regex.Replace(a, @"\s+", " "))
+                .ToArray();
+
+            for (int i = 0; i < messages.Length; i++)
+            {
+                messages[i] = Rot13String(messages[i]);
+            }
+
+            var result = new StringBuilder();
+
+            foreach (var message in messages)
+            {
+                result.Append(message);
+            }
+            Console.WriteLine(result);
+
+        }
+
+        static string Rot13String(string message)
+        {
+            StringBuilder res = new StringBuilder();
+            foreach (var letter in message)
+            {
+                res.Append(Rot13(letter));
+            }
+            return res.ToString();
+        }
+
+        static char Rot13(char letter)
+        {
+            if (!char.IsLetter(letter))
+            {
+                return letter;
+            }
+            var offset = char.IsUpper(letter) ? 'A' : 'a';
+            var rotatedLetter = (char)((letter - offset + 13) % 26 + offset);
+
+            return rotatedLetter;
+        }
+    }
+}
